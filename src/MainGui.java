@@ -55,6 +55,7 @@ public class MainGui extends JFrame {
         file.add(saveButton);
         file.add(delete);
         file.add(exit);
+
         toolbar = new Toolbar();
         //toolbar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(toolbar, BorderLayout.NORTH); // add toolbar

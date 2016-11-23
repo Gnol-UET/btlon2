@@ -51,6 +51,7 @@ public class MainGui extends JFrame {
                 loadUser();
                 refreshFrame();
             }
+
         });
         file.add(saveButton);
         file.add(delete);

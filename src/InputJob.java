@@ -17,14 +17,14 @@ public class InputJob extends JDialog{
         JTextField newName = new JTextField();
         JTextField newDescription = new JTextField();
 
-        String[] priorityDetail = {"0", "1", "2", "3"};
+
         String[] status = {"To-do", "Doing", "Done"};
         String[] repeat = {"Once", "Daily", "Weekly"};
 
         //Các Combobox gồm tên, status, repeat, priority lấy từ mảng trên
         JComboBox newStatus = new JComboBox(status);
         JComboBox newRepeat = new JComboBox(repeat);
-        JComboBox newPriority = new JComboBox(priorityDetail);
+        JComboBox newPriority = new JComboBox(Job.priorityDetail);
 
         //Ngày bắt đầu, ngày kết thúc, làm bằng JdatePicker
         UtilDateModel model_1 = new UtilDateModel();
@@ -59,7 +59,7 @@ public class InputJob extends JDialog{
             job.setDescription(newDescription.getText());
             job.setRepeat(newRepeat.getSelectedItem().toString());
             job.setStatus(newStatus.getSelectedItem().toString());
-            job.setPriority(Integer.parseInt(newPriority.getSelectedItem().toString()));
+            job.setPriority(newPriority.getSelectedItem().toString());
             DateFormat df = new
                     SimpleDateFormat("EEE MMM dd kk:mm:ss zzz yyyy");
             //System.out.println(endTime.toString() + startTime.toString());
@@ -68,7 +68,7 @@ public class InputJob extends JDialog{
                     job.setStartTime(df.parse(startTime.getModel().getValue().toString()));
                     job.setEndTime(df.parse(endTime.getModel().getValue().toString()));
             } catch (ParseException e1) {
-                e1.printStackTrace();
+                JOptionPane.showMessageDialog(null,"Please change time location-format to United States");
             }
 
             //In thông tin job

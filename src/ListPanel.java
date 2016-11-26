@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -67,7 +69,7 @@ public class ListPanel extends JTabbedPane {
             //sort
         container.removeAll();
         for (int i = 0; i < list.getList().size(); i++) {
-             container.add(new JobPanel2(list.getList().get(i)));
+            container.add(new JobPanel2(list.getList().get(i),user));
         }
     }
 
@@ -81,7 +83,7 @@ public class ListPanel extends JTabbedPane {
             add(jobList.getName(),nextList);
     }
     public void addJob(Job job,JobList listJob) {
-        JobPanel2 newJob = new JobPanel2(job);
+        JobPanel2 newJob = new JobPanel2(job,user);
         ((JXTaskPaneContainer) getComponent(indexOfTab(listJob.getName()))).add(newJob);
         revalidate();
         repaint();

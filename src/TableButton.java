@@ -1,11 +1,14 @@
 import org.jdesktop.swingx.HorizontalLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Created by Administrator on 19/11/2016.
@@ -67,10 +70,18 @@ public class TableButton extends JPanel {
         nameButton.setBorderPainted(false);
         nameButton.setContentAreaFilled(false);
         nameButton.setOpaque(false);
-        ImageIcon delicon = new ImageIcon(new ImageIcon("D:\\png\\trash.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        ImageIcon renameicon = new ImageIcon(new ImageIcon("D:\\png\\edit.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        delButton = new JButton(delicon);
-        renameButton = new JButton(renameicon);
+        ImageIcon delIcon = null;
+        ImageIcon renameIcon = null;
+        try {
+            BufferedImage delimage = ImageIO.read(getClass().getResourceAsStream("/Res/trash.png"));
+            BufferedImage renameimage = ImageIO.read(getClass().getResourceAsStream("/Res/edit.png"));
+            delIcon = new ImageIcon(delimage.getScaledInstance(20,20,Image.SCALE_SMOOTH));
+            renameIcon = new ImageIcon(renameimage.getScaledInstance(20,20,Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        delButton = new JButton(delIcon);
+        renameButton = new JButton(renameIcon);
         delButton.setBorderPainted(false);
         delButton.setContentAreaFilled(false);
         delButton.setFocusPainted(true);
@@ -84,7 +95,7 @@ public class TableButton extends JPanel {
         add(nameButton, BorderLayout.WEST);
         add(renameButton, BorderLayout.CENTER);
         add(delButton, BorderLayout.EAST);
-        Border raisedetched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+        //Border raisedetched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         Border line = BorderFactory.createLineBorder(Color.BLACK, 1, true);
         setBorder(line);
         setMaximumSize(new Dimension(300, 40));

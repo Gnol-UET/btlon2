@@ -15,7 +15,7 @@ public class User2 implements Serializable {
     private JobList currentList;
     private Job currentJob;
     private List<TableOfJobLists> userList;
-    //private List<Job> doneList;
+    private List<Job> doneList;
 
     public User2() {
         userList = new ArrayList<>();
@@ -59,8 +59,10 @@ public class User2 implements Serializable {
         this.currentJob = currentJob;
     }
 
-    public void switchState() {
-        currentJob.setStatus("Done");
+    public void completeJob(Job job) {
+        job.setStatus("Done");
+        doneList.add(job);
+        getCurrentList().getList().remove(job);
     }
 
     public void addNewJob(Job job) {

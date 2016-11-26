@@ -6,14 +6,14 @@ import java.util.Date;
  * ,priority , status and exact time of the day(Daily or Weekly giaoDien.maNguonChinh.Job)
  */
 public class Job implements Serializable {
-    public String[] priorityDetail = {"low", "average", "high", "highest"};
-
+    public static String[] priorityDetail = {"low", "average", "high", "highest"};
+    public static int[] priorityLevel = {0,1,2,3};
     private String description;
     private String name;
     private String repeat;//daily,weekly ,once
     private Date startTime; // start time
     private Date endTime; // end time
-    private int priority; // low ,average,high,highest - 0 ->3
+    private String priority; // low ,average,high,highest - 0 ->3
     private String status; // to-do , doing ,done
     private Date hour;
     /**
@@ -24,7 +24,7 @@ public class Job implements Serializable {
         endTime = null;
         description = "No description";
         repeat = "once";
-        priority = 0;
+        priority = "low";
         status = "To do";
         hour = null;
         name = "default";
@@ -70,11 +70,11 @@ public class Job implements Serializable {
         this.hour = hour;
     }
 
-    public int getPriority() {
+    public String getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 

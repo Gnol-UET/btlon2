@@ -1,20 +1,23 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  *
  */
 public class MainGui extends JFrame {
     static User2 user;
-    TrayIcon trayIcon;
-    SystemTray tray;
-    Table2 tablePanel;
-    ListPanel listPanel;
-    Toolbar toolbar;
-    JMenu file;
-    JMenuItem exit;
+    static TrayIcon trayIcon;
+    static SystemTray tray;
+    static Table2 tablePanel;
+    static ListPanel listPanel;
+    static Toolbar toolbar;
+    static JMenu file;
+    static JMenuItem exit;
 
     public MainGui() {
         loadUser();
@@ -60,6 +63,14 @@ public class MainGui extends JFrame {
         toolbar = new Toolbar();
         //toolbar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(toolbar, BorderLayout.NORTH); // add toolbar
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
+            BufferedImage image2 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
+            setIconImage(image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         tablePanel = new Table2();
         tablePanel.refreshTable(user);
         JScrollPane jScrollBarForTable = new JScrollPane(tablePanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -75,7 +86,8 @@ public class MainGui extends JFrame {
         setVisible(true);
         addListener();
         addLevelListener();
-        setIconImage(Toolkit.getDefaultToolkit().getImage("D:\\png\\calendar.png"));
+
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     }
@@ -234,8 +246,13 @@ public class MainGui extends JFrame {
         if (SystemTray.isSupported()) {
 
             tray = SystemTray.getSystemTray();
+            BufferedImage image = null;
+            try {
+                image = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
 
-            Image image = Toolkit.getDefaultToolkit().getImage("D:\\png\\calendar.png");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             ActionListener exitListener = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     setVisible(true);
@@ -293,7 +310,7 @@ public class MainGui extends JFrame {
         });
     }
 
-    public void refreshFrame() {
+    public static void refreshFrame() {
         tablePanel.refreshTable(user);
         listPanel.refreshTheList(user.getCurrentTable(), user);
 

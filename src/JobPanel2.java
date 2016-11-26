@@ -11,17 +11,22 @@ import java.awt.event.ActionListener;
 
 
 public class JobPanel2 extends JXTaskPane{
+    User2 user;
+    Job job;
     public JobPanel2(){
         super("Default Job");
     }
-    public JobPanel2(Job job){
+    public JobPanel2(Job thisJob,User2 currentUser){
 
-        super(job.getName() + "    :   " + job.getStatus());
-        JLabel label1 = new JLabel("Start time : " + job.getStartTime());
-        JLabel label2 = new JLabel("End time : " + job.getEndTime());
+        super(thisJob.getName() + "    :   " + thisJob.getStatus());
+        job = thisJob;
+        user = currentUser;
+
+        JLabel label1 = new JLabel("Start time : " + job.getStartTime()==null ? job.getStartTime().toString() : " -- : --"  );
+        JLabel label2 = new JLabel("End time : " + job.getEndTime() == null ? job.getEndTime().toString() : " -- : -- ");
         JLabel label3 = new JLabel("Repeat :" + job.getRepeat().toString());
         JLabel label4 = new JLabel("Description : " +job.getDescription().toString());
-        JLabel label5 = new JLabel("Priority : " +job.getPriorityDetail(job.getPriority()).toString());
+        JLabel label5 = new JLabel("Priority : " +job.getPriority());
         JLabel label6 = new JLabel("Time of day : " + job.getHour());
         add(label1);
         add(label2);
@@ -38,11 +43,8 @@ public class JobPanel2 extends JXTaskPane{
         ActionListener complete = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                job.setStatus("Done");
-                repaint();
-                setTitle(job.getName() + "    :   " + job.getStatus() );
-                label1.setText("Start time : " + " --:--");
-
+                user.completeJob(job);
+                MainGui.refreshFrame();
             }
         };
         JButton editButton = new JButton("Edit");

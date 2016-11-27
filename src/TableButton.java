@@ -104,13 +104,36 @@ public class TableButton extends JPanel {
         ActionListener selectTable = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!table.equals(user.getCurrentTable()))
-                    user.setCurrentTable(table);
-
+                user.setCurrentTable(table);
+                if(user.getCurrentTable().getToDoList().size() == 0)
+                {
+                    user.setCurrentList(null);
+                }
+                else {
+                    user.setCurrentList(user.getCurrentTable().getToDoList().get(0));
+                }
+                MainGui.refreshFrame();
 
             }
         };
         nameButton.addActionListener(selectTable);
+        renameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String s = (String) JOptionPane.showInputDialog("Enter Name for New Table", user.getCurrentTable().getNameOfTable());
+                if (s != null)
+                    if (!s.equals(""))
+                        user.getCurrentTable().setNameOfTable(s);
+
+                MainGui.refreshFrame();
+            }
+        });
+        delButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
 
     }
 }

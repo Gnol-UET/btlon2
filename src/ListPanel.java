@@ -39,8 +39,10 @@ public class ListPanel extends JTabbedPane {
         tabbedTable = userCurrentTable;
         for (int i = 0; i < tabbedTable.getToDoList().size(); i++) {
             JXTaskPaneContainer newList = new JXTaskPaneContainer();
+            newList.setBackground(Color.white);
             //newList.setBackground(new Color(245, 255,68));
             add(tabbedTable.getToDoList().get(i).getName(),newList);
+
             refreshTheJobs(newList,tabbedTable.getToDoList().get(i));
         }
         addChangeListener(new ChangeListener() {
@@ -50,17 +52,17 @@ public class ListPanel extends JTabbedPane {
                 sel = getSelectedIndex();
                 if(sel!= -1)
                     try {
-                        user.setCurrentList(userCurrentTable.getToDoList().get(sel));
+                        user.setCurrentList(user.getCurrentTable().getToDoList().get(sel));
                     }
                     catch(Exception ee){
-                        //JOptionPane.showMessageDialog(null,"No list error");
+                       // JOptionPane.showMessageDialog(null,"No list error");
                 }
 
 
 
             }
         });
-        setSelectedIndex(sel);
+        //setSelectedIndex(sel);
         revalidate();
         repaint();
 

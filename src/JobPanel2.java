@@ -22,18 +22,18 @@ public class JobPanel2 extends JXTaskPane{
         job = thisJob;
         user = currentUser;
 
-        JLabel label1 = new JLabel("Start time : " + job.getStartTime()==null ? job.getStartTime().toString() : " -- : --"  );
-        JLabel label2 = new JLabel("End time : " + job.getEndTime() == null ? job.getEndTime().toString() : " -- : -- ");
+        JLabel label1 = new JLabel("Start time : " + (job.getStartTime()!= null ? job.getStartTime().toString() : " -- : --")  );
+        JLabel label2 = new JLabel("End time : " + (job.getEndTime() != null ? job.getEndTime().toString() : " -- : -- "));
         JLabel label3 = new JLabel("Repeat :" + job.getRepeat().toString());
         JLabel label4 = new JLabel("Description : " +job.getDescription().toString());
         JLabel label5 = new JLabel("Priority : " +job.getPriority());
-        JLabel label6 = new JLabel("Time of day : " + job.getHour());
+        //JLabel label6 = new JLabel("Time of day : " + job.getHour());
         add(label1);
         add(label2);
         add(label3);
         add(label4);
         add(label5);
-        add(label6);
+        //add(label6);
         ActionListener editButtonL = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -53,8 +53,10 @@ public class JobPanel2 extends JXTaskPane{
         completeButton.addActionListener(complete);
         setAutoscrolls(true);
         setCollapsed(true);
-        add(editButton);
-        add(completeButton);
+        if(!job.getStatus().equals("Done")) {
+            add(editButton);
+            add(completeButton);
+        }
         setVisible(true);
     }
 }

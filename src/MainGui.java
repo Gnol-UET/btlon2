@@ -1,5 +1,10 @@
+import org.jdesktop.swingx.HorizontalLayout;
+import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.JXTaskPaneContainer;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -18,10 +23,31 @@ public class MainGui extends JFrame {
     static Toolbar toolbar;
     static JMenu file;
     static JMenuItem exit;
-
+    static JPanel iconPanel;
+    public void intiPanel(){
+        iconPanel = new JPanel();
+        FlowLayout fl = new FlowLayout();
+        iconPanel.setLayout(fl);
+        BufferedImage image2 = null;
+        try {
+            image2 = ImageIO.read(getClass().getResourceAsStream("/Res/MainImage.gif"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ImageIcon icon = new ImageIcon(image2.getScaledInstance(150,90,Image.SCALE_SMOOTH));
+        JLabel iconLabel = new JLabel(icon);
+        iconPanel.add(iconLabel);
+        JTextField textField = new JTextField(35);
+        JButton searchButton = new JButton("Search");
+        //searchButton.setBorder
+        iconPanel.add(textField);
+        iconPanel.add(searchButton);
+        add(iconPanel,BorderLayout.NORTH);
+    }
     public MainGui() {
         loadUser();
         setLayout(new BorderLayout());
+        intiPanel();
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         JMenu help = new JMenu("Help");
@@ -62,10 +88,10 @@ public class MainGui extends JFrame {
 
         toolbar = new Toolbar();
         //toolbar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(toolbar, BorderLayout.NORTH); // add toolbar
+        add(toolbar, BorderLayout.SOUTH); // add toolbar
         try {
             BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
-            BufferedImage image2 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
+            //BufferedImage image2 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
             setIconImage(image);
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,18 +100,18 @@ public class MainGui extends JFrame {
         tablePanel = new Table2();
         tablePanel.refreshTable(user);
         JScrollPane jScrollBarForTable = new JScrollPane(tablePanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        jScrollBarForTable.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        jScrollBarForTable.setBorder(BorderFactory.createEmptyBorder());
         add(jScrollBarForTable, BorderLayout.WEST); // add table  with scrollbar
         listPanel = new ListPanel(user.getCurrentTable(), user);
         JScrollPane jScrollPaneForJob = new JScrollPane(listPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(jScrollPaneForJob, BorderLayout.CENTER);
-        jScrollPaneForJob.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        jScrollPaneForJob.setBorder(BorderFactory.createEmptyBorder());
         setTray();
         setSize(700, 450);
         setTitle("My Reminder");
         setVisible(true);
         addListener();
-        addLevelListener();
+        //addLevelListener();
 
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -96,7 +122,6 @@ public class MainGui extends JFrame {
 
         MainGui newMain = new MainGui();
         user.getCurrentList();
-        newMain.refreshFrame();
 
 
     }
@@ -110,9 +135,6 @@ public class MainGui extends JFrame {
                 if (s != null)
                     if (!s.equals(""))
                         user.addNewTable(s);
-
-                refreshFrame();
-                addLevelListener();
                 refreshFrame();
 
             }
@@ -133,12 +155,7 @@ public class MainGui extends JFrame {
                 try {
                     final boolean[] close = {false};
                     InputJob inputJob = new InputJob();
-                    inputJob.addWindowListener(new WindowAdapter() {
-                        @Override
-                        public void windowClosed(WindowEvent e) {
-                            close[0] = true;
-                        }
-                    });
+
                     if (!inputJob.getJob().getDescription().equalsIgnoreCase("No description") && !inputJob.getJob().getDescription().equalsIgnoreCase("") && close[0] == false) {
                         user.getCurrentList().addJobToCurrentList(inputJob.getJob());
                     }
@@ -148,75 +165,34 @@ public class MainGui extends JFrame {
                 }
             }
         };
-
-        MouseListener mouse = new MouseListener() {
+        toolbar.getViewDoneJobs().addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                refreshFrame();
+            public void actionPerformed(ActionEvent e) {
+                JFrame doneFrame = new JFrame();
+                doneFrame.setTitle("Done Job");
+                JXTaskPaneContainer list = new JXTaskPaneContainer();
+                JScrollPane scrolPane2 = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                doneFrame.getContentPane().add(scrolPane2);
+                BufferedImage image3 = null;
+                try {
+                    image3 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar-23.png"));
+                } catch (IOException e4) {
+                    e4.printStackTrace();
+                }
+                //ImageIcon icon3 = new ImageIcon(image3.getScaledInstance(150,90,Image.SCALE_SMOOTH));
+                doneFrame.setIconImage(image3);
+                for (int i = 0; i < user.getDoneList().size(); i++) {
+                    JobPanel2 doneJob = new JobPanel2(user.getDoneList().get(i),user);
+                    list.add(doneJob);
+                }
+                doneFrame.setVisible(true);
+                doneFrame.setSize(450,450);
+                doneFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        };
+        });
         toolbar.getAddJobButton().addActionListener(addJob);
         toolbar.getAddListButton().addActionListener(addList);
         toolbar.getAddTableButton().addActionListener(addTable);
-    }
-
-    public void addLevelListener() {
-
-        for (int i = 0; i < tablePanel.getComponentCount(); i = i + 2) {
-            TableButton tableButton = (TableButton) tablePanel.getComponent(i);
-            ActionListener selectTable = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (tableButton.getTable().equals(user.getCurrentTable()))
-                        user.setCurrentTable(tableButton.getTable());
-                    if (user.getCurrentTable().getToDoList().size() == 0)
-                        user.setCurrentList(null);
-                    else
-                        user.getCurrentTable().getToDoList().get(0);
-                    refreshFrame();
-
-                }
-            };
-            tableButton.getRenameButton().addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String s = (String) JOptionPane.showInputDialog("Enter Name for New Table", user.getCurrentTable().getNameOfTable());
-                    if (s != null)
-                        if (!s.equals(""))
-                            user.getCurrentTable().setNameOfTable(s);
-
-                    refreshFrame();
-                }
-            });
-            tableButton.getDelButton().addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // user.removeATable(user.getCurrentTable());
-                    refreshFrame();
-                }
-            });
-            tableButton.getNameButton().addActionListener(selectTable);
-        }
     }
 
     public void loadUser() {

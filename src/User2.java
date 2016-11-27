@@ -17,12 +17,22 @@ public class User2 implements Serializable {
     private List<TableOfJobLists> userList;
     private List<Job> doneList;
 
+    public List<Job> getDoneList() {
+        return doneList;
+    }
+
+    public void setDoneList(List<Job> doneList) {
+        this.doneList = doneList;
+    }
+
     public User2() {
         userList = new ArrayList<>();
         userLogs.add("User logged in");
         TableOfJobLists newtable = addNewTable("DefaultTable");
         setCurrentTable(newtable);
-        setCurrentList(newtable.addList("DefaultList"));
+        doneList = new ArrayList<>();
+
+        setCurrentList(newtable.addList("Default List"));
 
 
     }

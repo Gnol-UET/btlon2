@@ -65,10 +65,19 @@ public class InputJob extends JDialog{
             //System.out.println(endTime.toString() + startTime.toString());
             //Set ngày bắt đầu phải dùng try catch
             try {
+
                     job.setStartTime(df.parse(startTime.getModel().getValue().toString()));
                     job.setEndTime(df.parse(endTime.getModel().getValue().toString()));
-            } catch (ParseException e1) {
+                    if(job.getStartTime().after(job.getEndTime()))
+                    {
+                        job.setStartTime(null);
+                        job.setEndTime(null);
+                        throw new Exception();
+                    }
+            } catch (Exception e1) {
+
                 JOptionPane.showMessageDialog(null,"Please change time location-format to United States");
+                JOptionPane.showMessageDialog(null,"Start time must be before end time , it been set to null");
             }
 
             //In thông tin job

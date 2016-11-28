@@ -4,27 +4,24 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 
 /**
  * Created by Administrator on 19/11/2016.
  */
-public class ListPanel extends JTabbedPane {
+public class ListsPanel extends JTabbedPane {
         static int count = 0;
         int sel;
         TableOfJobLists tabbedTable;
-        User2 user;
-    public ListPanel(){
+        User user;
+    public ListsPanel(){
         JXTaskPaneContainer task1 = new JXTaskPaneContainer();
 
         add("DefaultList1",task1);
 
     }
-    public ListPanel(TableOfJobLists table,User2 currentuser){
+    public ListsPanel(TableOfJobLists table, User currentuser){
         user = currentuser;
-        for ( JobList jl: table.getToDoList())
+        for ( JobList jl: table.getListsOfJobs())
               {
                   tabbedTable = table;
                   JXTaskPaneContainer task1 = new JXTaskPaneContainer();
@@ -33,17 +30,17 @@ public class ListPanel extends JTabbedPane {
         }
 
     }
-    public void refreshTheList(TableOfJobLists userCurrentTable,User2 currentuser) {
+    public void refreshTheList(TableOfJobLists userCurrentTable, User currentuser) {
         removeAll();
         user = currentuser;
         tabbedTable = userCurrentTable;
-        for (int i = 0; i < tabbedTable.getToDoList().size(); i++) {
+        for (int i = 0; i < tabbedTable.getListsOfJobs().size(); i++) {
             JXTaskPaneContainer newList = new JXTaskPaneContainer();
             newList.setBackground(Color.white);
             //newList.setBackground(new Color(245, 255,68));
-            add(tabbedTable.getToDoList().get(i).getName(),newList);
+            add(tabbedTable.getListsOfJobs().get(i).getName(),newList);
 
-            refreshTheJobs(newList,tabbedTable.getToDoList().get(i));
+            refreshTheJobs(newList,tabbedTable.getListsOfJobs().get(i));
         }
         addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
@@ -52,7 +49,7 @@ public class ListPanel extends JTabbedPane {
                 sel = getSelectedIndex();
                 if(sel!= -1)
                     try {
-                        user.setCurrentList(user.getCurrentTable().getToDoList().get(sel));
+                        user.setCurrentList(user.getCurrentTable().getListsOfJobs().get(sel));
                     }
                     catch(Exception ee){
                        // JOptionPane.showMessageDialog(null,"No list error");
@@ -71,7 +68,7 @@ public class ListPanel extends JTabbedPane {
             //sort
         container.removeAll();
         for (int i = 0; i < list.getList().size(); i++) {
-            container.add(new JobPanel2(list.getList().get(i),user));
+            container.add(new JobPane(list.getList().get(i),user));
         }
     }
 
@@ -85,7 +82,7 @@ public class ListPanel extends JTabbedPane {
             add(jobList.getName(),nextList);
     }
     public void addJob(Job job,JobList listJob) {
-        JobPanel2 newJob = new JobPanel2(job,user);
+        JobPane newJob = new JobPane(job,user);
         ((JXTaskPaneContainer) getComponent(indexOfTab(listJob.getName()))).add(newJob);
         revalidate();
         repaint();

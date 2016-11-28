@@ -1,9 +1,6 @@
-import org.jdesktop.swingx.HorizontalLayout;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +12,7 @@ import java.io.IOException;
  */
 public class TableButton extends JPanel {
     private TableOfJobLists table;
-    private User2 user;
+    private User user;
     JButton delButton;
     JButton renameButton;
 
@@ -55,15 +52,15 @@ public class TableButton extends JPanel {
         this.table = table;
     }
 
-    public User2 getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(User2 user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public TableButton(TableOfJobLists table1, User2 currentUser) {
+    public TableButton(TableOfJobLists table1, User currentUser) {
         user = currentUser;
         table = table1;
         nameButton = new JButton(table1.getNameOfTable());
@@ -105,12 +102,12 @@ public class TableButton extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 user.setCurrentTable(table);
-                if(user.getCurrentTable().getToDoList().size() == 0)
+                if(user.getCurrentTable().getListsOfJobs().size() == 0)
                 {
                     user.setCurrentList(null);
                 }
                 else {
-                    user.setCurrentList(user.getCurrentTable().getToDoList().get(0));
+                    user.setCurrentList(user.getCurrentTable().getListsOfJobs().get(0));
                 }
                 MainGui.refreshFrame();
 

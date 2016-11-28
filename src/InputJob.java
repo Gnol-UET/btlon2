@@ -37,19 +37,19 @@ public class InputJob extends JDialog{
 
         //Tạo form điền
         final JComponent[] inputs = new JComponent[]{
-                new JLabel("New Name: "),
+                new JLabel("Name: "),
                 newName,
-                new JLabel("New Description: "),
+                new JLabel("Description: "),
                 newDescription,
-                new JLabel("New Repeat: "),
+                new JLabel("Repeat: "),
                 newRepeat,
-                new JLabel("New Status: "),
+                new JLabel("Status: "),
                 newStatus,
-                new JLabel("New Priority: "),
+                new JLabel("Priority: "),
                 newPriority,
-                new JLabel("New Starttime: "),
+                new JLabel("Start time: "),
                 startTime,
-                new JLabel("New Endtime: "),
+                new JLabel("End time: "),
                 endTime,
         };
         int result = JOptionPane.showConfirmDialog(null, inputs, "Edit a Job", JOptionPane.PLAIN_MESSAGE);

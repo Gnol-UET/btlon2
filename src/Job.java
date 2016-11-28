@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -96,7 +97,4 @@ public class Job implements Serializable {
         this.description = description;
     }
 
-    public String getPriorityDetail(int i) {
-        return priorityDetail[i];
-    }
 }

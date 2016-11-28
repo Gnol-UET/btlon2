@@ -5,18 +5,17 @@ import org.jdesktop.swingx.*;
 
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class JobPanel2 extends JXTaskPane{
-    User2 user;
+public class JobPane extends JXTaskPane{
+    User user;
     Job job;
-    public JobPanel2(){
+    public JobPane(){
         super("Default Job");
     }
-    public JobPanel2(Job thisJob,User2 currentUser){
+    public JobPane(Job thisJob, User currentUser){
 
         super(thisJob.getName() + "    :   " + thisJob.getStatus());
         job = thisJob;

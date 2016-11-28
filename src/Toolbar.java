@@ -11,7 +11,6 @@ public class Toolbar extends JToolBar {
     private JButton addTableButton;
     private JButton addListButton;
     private JButton addJobButton;
-    private JButton viewDoneJobs;
     private JButton viewUserLogs;
 
     public JButton getAddTableButton() {
@@ -38,17 +37,8 @@ public class Toolbar extends JToolBar {
         this.addJobButton = addJobButton;
     }
 
-    public JButton getViewDoneJobs() {
-        return viewDoneJobs;
-    }
 
-    public void setViewDoneJobs(JButton viewDoneJobs) {
-        this.viewDoneJobs = viewDoneJobs;
-    }
 
-    public JButton getViewUserLogs() {
-        return viewUserLogs;
-    }
 
     public void setViewUserLogs(JButton viewUserLogs) {
         this.viewUserLogs = viewUserLogs;
@@ -60,12 +50,9 @@ public class Toolbar extends JToolBar {
         addListButton = new JButton("Add a List");
         add(Box.createRigidArea(new Dimension(0,0)));
         addJobButton = new JButton("Add new Job");
-        viewDoneJobs = new JButton("View done jobs");
         viewUserLogs = new JButton("View user logs");
         add(addTableButton);
-        add(Box.createRigidArea(new Dimension(50,0)));
-        add(viewDoneJobs);
-        add(Box.createRigidArea(new Dimension(50,0)));
+        add(Box.createRigidArea(new Dimension(135,0)));
         add(viewUserLogs);
         add(Box.createRigidArea(new Dimension(50,0)));
         add(addListButton);

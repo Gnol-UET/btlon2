@@ -12,24 +12,25 @@ public class TableOfJobLists implements Serializable {
     static int numberOfTable = 0;
     private int index;
     private String nameOfTable;
-    private List<JobList> toDoList;
+    private List<JobList> listsOfJobs;
+
     public JobList addList(String name){
         JobList newList = new JobList();
         if(!name.equals(""))
             newList.setName(name);
-        toDoList.add(newList);
+        listsOfJobs.add(newList);
         return  newList;
     }
     public void addJobToCurrentTable(int listIndex, Job job) {
-        toDoList.get(listIndex).addJobToCurrentList(job);
+        listsOfJobs.get(listIndex).addJobToCurrentList(job);
     }
 
-    public List<JobList> getToDoList() {
-        return toDoList;
+    public List<JobList> getListsOfJobs() {
+        return listsOfJobs;
     }
 
-    public void setToDoList(List<JobList> toDoList) {
-        this.toDoList = toDoList;
+    public void setListsOfJobs(List<JobList> listsOfJobs) {
+        this.listsOfJobs = listsOfJobs;
     }
 
     public int getIndex() {
@@ -43,8 +44,13 @@ public class TableOfJobLists implements Serializable {
     public TableOfJobLists() {
         numberOfTable++;
         nameOfTable = " DefaultTable" + numberOfTable;
-        toDoList = new ArrayList<>();
+        listsOfJobs = new ArrayList<>();
         index = numberOfTable;
+    }
+    public TableOfJobLists(TableOfJobLists table){
+        this.listsOfJobs = table.getListsOfJobs();
+        this.nameOfTable = table.getNameOfTable();
+        this.index = table.getIndex();
     }
 
     public String getNameOfTable() {

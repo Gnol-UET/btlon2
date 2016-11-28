@@ -1,7 +1,4 @@
 import java.io.*;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,12 +6,11 @@ import java.util.List;
  * @author Vu Ngoc Quy - 10521480
  *         Lab 0
  */
-public class User2 implements Serializable {
-    public static List<String> userLogs = new ArrayList<>();
+public class User implements Serializable {
+    public List<String> userLogs = new ArrayList<>();
     private TableOfJobLists currentTable;
     private JobList currentList;
-    private Job currentJob;
-    private List<TableOfJobLists> userList;
+    private List<TableOfJobLists> tablesOfLists;
     private List<Job> doneList;
 
     public List<Job> getDoneList() {
@@ -25,8 +21,8 @@ public class User2 implements Serializable {
         this.doneList = doneList;
     }
 
-    public User2() {
-        userList = new ArrayList<>();
+    public User() {
+        tablesOfLists = new ArrayList<>();
         userLogs.add("User logged in");
         TableOfJobLists newtable = addNewTable("DefaultTable");
         setCurrentTable(newtable);
@@ -36,13 +32,19 @@ public class User2 implements Serializable {
 
 
     }
-
-    public List<TableOfJobLists> getUserList() {
-        return userList;
+    public void copyATable(TableOfJobLists table){
+        this.getTablesOfLists().add(new TableOfJobLists(table));
+    }
+    public void moveAJob(JobList sourceList, JobList desList,Job job){
+        desList.addJobToCurrentList(job);
+        sourceList.getList().remove(job);
+    }
+    public List<TableOfJobLists> getTablesOfLists() {
+        return tablesOfLists;
     }
 
-    public void setUserList(List<TableOfJobLists> userList) {
-        this.userList = userList;
+    public void setTablesOfLists(List<TableOfJobLists> tablesOfLists) {
+        this.tablesOfLists = tablesOfLists;
     }
 
     public TableOfJobLists getCurrentTable() {
@@ -61,14 +63,6 @@ public class User2 implements Serializable {
         this.currentList = currentList;
     }
 
-    public Job getCurrentJob() {
-        return currentJob;
-    }
-
-    public void setCurrentJob(Job currentJob) {
-        this.currentJob = currentJob;
-    }
-
     public void completeJob(Job job) {
         job.setStatus("Done");
         doneList.add(job);
@@ -80,18 +74,18 @@ public class User2 implements Serializable {
     }
 
     public void editTableName(int tableIndex, String newName) {
-        this.userList.get(tableIndex).setNameOfTable(newName);
+        this.tablesOfLists.get(tableIndex).setNameOfTable(newName);
     }
 
     public void removeATable(TableOfJobLists tableToRemove) {
-        userList.remove(tableToRemove);
+        tablesOfLists.remove(tableToRemove);
     }
 
     public TableOfJobLists addNewTable(String name) {
         TableOfJobLists newTable = new TableOfJobLists();
-        userList.add(newTable);
+        tablesOfLists.add(newTable);
         if(!name.equals(""))
-            userList.get(userList.size()-1).setNameOfTable(name);
+            tablesOfLists.get(tablesOfLists.size()-1).setNameOfTable(name);
         return newTable;
     }
 
@@ -115,14 +109,14 @@ public class User2 implements Serializable {
 
     }
 
-    public static User2 readFromFile() throws IOException, ClassNotFoundException {
+    public static User readFromFile() throws IOException, ClassNotFoundException {
         File inFile = new File("new.admin.data");
         //if (!inFile.exists()) {
           //  this.saveToFile();
         //}
         FileInputStream inStream = new FileInputStream(inFile);
         ObjectInputStream ObjInPutStream = new ObjectInputStream(inStream);
-        User2 userAdmin = (User2) ObjInPutStream.readObject();
+        User userAdmin = (User) ObjInPutStream.readObject();
         ObjInPutStream.close();
         return userAdmin;
     }

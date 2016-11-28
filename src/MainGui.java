@@ -1,10 +1,7 @@
-import org.jdesktop.swingx.HorizontalLayout;
-import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -15,15 +12,35 @@ import java.io.IOException;
  *
  */
 public class MainGui extends JFrame {
-    static User2 user;
+    static User user;
     static TrayIcon trayIcon;
     static SystemTray tray;
-    static Table2 tablePanel;
-    static ListPanel listPanel;
+    static TablesPanel tablesPanel;
+    static ListsPanel listsPanel;
     static Toolbar toolbar;
     static JMenu file;
     static JMenuItem exit;
     static JPanel iconPanel;
+
+    public void saveOnClose(){
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int choice = JOptionPane.showConfirmDialog(null,
+                        "Are you sure to save user data?", "Really Closing?",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if(choice != JOptionPane.CANCEL_OPTION){
+                    if(choice == JOptionPane.YES_OPTION)
+                        user.saveToFile();
+                    System.exit(0);
+                }
+
+            }
+        });
+    }
+
     public void intiPanel(){
         iconPanel = new JPanel();
         FlowLayout fl = new FlowLayout();
@@ -34,18 +51,20 @@ public class MainGui extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ImageIcon icon = new ImageIcon(image2.getScaledInstance(150,90,Image.SCALE_SMOOTH));
+        ImageIcon icon = new ImageIcon(image2.getScaledInstance(140,90,Image.SCALE_SMOOTH));
         JLabel iconLabel = new JLabel(icon);
         iconPanel.add(iconLabel);
-        JTextField textField = new JTextField(35);
+        JTextField textField = new JTextField(30);
         JButton searchButton = new JButton("Search");
         //searchButton.setBorder
         iconPanel.add(textField);
         iconPanel.add(searchButton);
         add(iconPanel,BorderLayout.NORTH);
     }
+
     public MainGui() {
         loadUser();
+        saveOnClose();
         setLayout(new BorderLayout());
         intiPanel();
         JMenuBar menuBar = new JMenuBar();
@@ -53,13 +72,51 @@ public class MainGui extends JFrame {
         JMenu help = new JMenu("Help");
         menuBar.add(file);
         menuBar.add(help);
+        JMenuItem doneJobs = new JMenuItem("View done jobs");
+        doneJobs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame doneFrame = new JFrame();
+                doneFrame.setTitle("Done Job");
+                doneFrame.setBackground(Color.WHITE);
+                JXTaskPaneContainer list = new JXTaskPaneContainer();
+                JScrollPane scrolPane2 = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                doneFrame.getContentPane().add(scrolPane2);
+                BufferedImage image3 = null;
+                try {
+                    image3 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar-23.png"));
+                } catch (IOException e4) {
+                    e4.printStackTrace();
+                }
+                //ImageIcon icon3 = new ImageIcon(image3.getScaledInstance(150,90,Image.SCALE_SMOOTH));
+                doneFrame.setIconImage(image3);
+                for (int i = 0; i < user.getDoneList().size(); i++) {
+                    JobPane doneJob = new JobPane(user.getDoneList().get(i),user);
+                    list.add(doneJob);
+                }
+                doneFrame.setVisible(true);
+                doneFrame.setSize(450,450);
+                doneFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            }
+        });
+        help.add(doneJobs);
         exit = new JMenuItem("Exit");//add Menus
         setJMenuBar(menuBar);
 
         ActionListener exitButton = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+
+                int choice = JOptionPane.showConfirmDialog(null,
+                        "Are you sure to save user data?", "Really Closing?",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (choice != JOptionPane.CANCEL_OPTION) {
+                    if (choice == JOptionPane.YES_OPTION)
+                        user.saveToFile();
+                    System.exit(0);
+                }
             }
         };
         exit.addActionListener(exitButton);
@@ -75,7 +132,7 @@ public class MainGui extends JFrame {
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                user = new User2();
+                user = new User();
                 user.saveToFile();
                 loadUser();
                 refreshFrame();
@@ -87,34 +144,33 @@ public class MainGui extends JFrame {
         file.add(exit);
 
         toolbar = new Toolbar();
-        //toolbar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        toolbar.setBorder(BorderFactory.createEmptyBorder(10,10,20,10));
         add(toolbar, BorderLayout.SOUTH); // add toolbar
         try {
             BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
-            //BufferedImage image2 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar.png"));
             setIconImage(image);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        tablePanel = new Table2();
-        tablePanel.refreshTable(user);
-        JScrollPane jScrollBarForTable = new JScrollPane(tablePanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tablesPanel = new TablesPanel();
+        tablesPanel.refreshTable(user);
+        JScrollPane jScrollBarForTable = new JScrollPane(tablesPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jScrollBarForTable.setBorder(BorderFactory.createEmptyBorder());
         add(jScrollBarForTable, BorderLayout.WEST); // add table  with scrollbar
-        listPanel = new ListPanel(user.getCurrentTable(), user);
-        JScrollPane jScrollPaneForJob = new JScrollPane(listPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        listsPanel = new ListsPanel(user.getCurrentTable(), user);
+        JScrollPane jScrollPaneForJob = new JScrollPane(listsPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(jScrollPaneForJob, BorderLayout.CENTER);
         jScrollPaneForJob.setBorder(BorderFactory.createEmptyBorder());
         setTray();
-        setSize(700, 450);
+        setSize(850, 500);
         setTitle("My Reminder");
         setVisible(true);
         addListener();
         //addLevelListener();
 
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     }
 
@@ -165,31 +221,6 @@ public class MainGui extends JFrame {
                 }
             }
         };
-        toolbar.getViewDoneJobs().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame doneFrame = new JFrame();
-                doneFrame.setTitle("Done Job");
-                JXTaskPaneContainer list = new JXTaskPaneContainer();
-                JScrollPane scrolPane2 = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                doneFrame.getContentPane().add(scrolPane2);
-                BufferedImage image3 = null;
-                try {
-                    image3 = ImageIO.read(getClass().getResourceAsStream("/Res/calendar-23.png"));
-                } catch (IOException e4) {
-                    e4.printStackTrace();
-                }
-                //ImageIcon icon3 = new ImageIcon(image3.getScaledInstance(150,90,Image.SCALE_SMOOTH));
-                doneFrame.setIconImage(image3);
-                for (int i = 0; i < user.getDoneList().size(); i++) {
-                    JobPanel2 doneJob = new JobPanel2(user.getDoneList().get(i),user);
-                    list.add(doneJob);
-                }
-                doneFrame.setVisible(true);
-                doneFrame.setSize(450,450);
-                doneFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-            }
-        });
         toolbar.getAddJobButton().addActionListener(addJob);
         toolbar.getAddListButton().addActionListener(addList);
         toolbar.getAddTableButton().addActionListener(addTable);
@@ -198,13 +229,13 @@ public class MainGui extends JFrame {
     public void loadUser() {
         File inFile = new File("new.admin.data");
         if (!inFile.exists()) {
-            user = new User2();
+            user = new User();
             user.saveToFile();
 
         } else {
             try {
 
-                user = User2.readFromFile();
+                user = User.readFromFile();
             } catch (Exception ee) {
                 System.out.println(ee.getLocalizedMessage());
                 JOptionPane.showMessageDialog(this, ee.getMessage());
@@ -243,7 +274,17 @@ public class MainGui extends JFrame {
             defaultItem = new MenuItem("Exit");
             defaultItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
+
+                    int choice = JOptionPane.showConfirmDialog(null,
+                            "Are you sure to save user data?", "Really Closing?",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+
+                    if(choice != JOptionPane.CANCEL_OPTION) {
+                        if (choice == JOptionPane.YES_OPTION)
+                            user.saveToFile();
+                        System.exit(0);
+                    }
                 }
             });
             popup.add(defaultItem);
@@ -287,8 +328,8 @@ public class MainGui extends JFrame {
     }
 
     public static void refreshFrame() {
-        tablePanel.refreshTable(user);
-        listPanel.refreshTheList(user.getCurrentTable(), user);
+        tablesPanel.refreshTable(user);
+        listsPanel.refreshTheList(user.getCurrentTable(), user);
 
     }
 }
